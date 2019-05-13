@@ -127,6 +127,7 @@ class ImInputUI(context: Context) : LinearLayout(context) {
                         openKeybord(et_text!!)
                     } else {
                         closeKeybord(et_text!!)
+                        et_text?.clearFocus()
                     }
                 }
                 background = resources.getDrawable(R.drawable.im_face)
@@ -231,6 +232,7 @@ class ImInputUI(context: Context) : LinearLayout(context) {
         if (inAudio) {
             closeKeybord(et_text!!)
             gv_button?.gone()
+            im_emoji?.gone()
         } else if (et_text!!.isFocused) {
             openKeybord(et_text!!)
         }
@@ -257,6 +259,7 @@ class ImInputUI(context: Context) : LinearLayout(context) {
             closeKeybord(et_text!!)
         }
         gv_button?.gone()
+        im_emoji?.gone()
     }
 
     private var send: (Int, Any) -> Unit = { type, msg -> }

@@ -68,15 +68,15 @@ class ImAudioView(context: Context, parent: ViewGroup) : RealImView(context, par
 
 
         m = dip(50)
-        var length = getLength(dip(20), item.duration())
+        var length = dip(65) + getLength(0, item.duration())
         fl_voice?.layoutParams = (fl_voice?.layoutParams as FrameLayout.LayoutParams).apply {
             width = length
             gravity = if (item.isSelf()) Gravity.RIGHT else Gravity.LEFT
         }
         tv_time?.layoutParams = (tv_time?.layoutParams as FrameLayout.LayoutParams).apply {
             gravity = (if (item.isSelf()) Gravity.RIGHT else Gravity.LEFT) xor Gravity.CENTER_VERTICAL
-            leftMargin = if (item.isSelf()) 0 else dip(30)
-            rightMargin = if (!item.isSelf()) 0 else dip(30)
+            leftMargin = if (item.isSelf()) 0 else dip(25)
+            rightMargin = if (!item.isSelf()) 0 else dip(25)
         }
         iv_play?.layoutParams = (iv_play?.layoutParams as FrameLayout.LayoutParams).apply {
             gravity = (if (item.isSelf()) Gravity.RIGHT else Gravity.LEFT) xor Gravity.CENTER_VERTICAL

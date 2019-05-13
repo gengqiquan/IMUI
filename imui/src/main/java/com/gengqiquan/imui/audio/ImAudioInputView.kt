@@ -45,7 +45,7 @@ class ImAudioInputView(context: Context, val send: (Any) -> Unit) : TextView(con
 //                                inputHandler?.stopRecording()
 //                                return@startRecord
 //                            }
-                        if (it < 500) {
+                        if (it < 1000) {
                             ToastHelp.toastShortMessage("说话时间太短")
                             return@startRecord
                         }
