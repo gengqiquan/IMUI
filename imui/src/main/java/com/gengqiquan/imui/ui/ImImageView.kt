@@ -19,11 +19,10 @@ class ImImageView(context: Context) : RealImView(context) {
     override fun floatBaseView() = iv_img!!
 
     override fun createItemView(contentView: RelativeLayout): View {
-        return contentView.apply {
-            iv_img = imageView {
-                scaleType = ImageView.ScaleType.CENTER_INSIDE
-            }
+        iv_img = ImageView(context).apply {
+            scaleType = ImageView.ScaleType.CENTER_INSIDE
         }
+        return iv_img!!
     }
 
     override fun decoratorItemView(item: IimMsg) {

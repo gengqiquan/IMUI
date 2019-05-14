@@ -31,13 +31,12 @@ class ImTextView(context: Context) : RealImView(context) {
     }
 
     override fun createItemView(contentView: RelativeLayout): View {
-        return contentView.apply {
-            tv_content = textView {
-                textColor = Color.BLACK
-                textSize = 18f
-                includeFontPadding = false
-            }
+        tv_content = TextView(context).apply {
+            textColor = Color.BLACK
+            textSize = 18f
+            includeFontPadding = false
         }
+        return tv_content!!
     }
 
 

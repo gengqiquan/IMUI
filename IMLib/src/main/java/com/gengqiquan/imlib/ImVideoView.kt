@@ -29,6 +29,7 @@ class ImVideoView(context: Context) : RealImView(context) {
     var iv_paly: ImageView? = null
     var iv_loading: ImageView? = null
     var fl_content: FrameLayout? = null
+    var rl_item: RelativeLayout? = null
     //    var ll_content: RelativeLayout? = null
     override fun floatBaseView(): View = iv_img!!
 
@@ -37,37 +38,35 @@ class ImVideoView(context: Context) : RealImView(context) {
     val localId = 0xff9900
 
     override fun createItemView(contentView: RelativeLayout): View {
-        return contentView.apply {
-            relativeLayout {
-                gravity = Gravity.CENTER_VERTICAL
-                fl_content = frameLayout {
-                    id = localId
-                    layoutParams = RelativeLayout.LayoutParams(wrapContent, wrapContent)
-                    iv_img = imageView {
-                        scaleType = ImageView.ScaleType.CENTER_INSIDE
-                        layoutParams = FrameLayout.LayoutParams(matchParent, matchParent)
-                    }
-                    iv_paly = imageView {
-                        scaleType = ImageView.ScaleType.CENTER_INSIDE
-                        setImageResource(R.drawable.im_play)
-                        visibility = View.GONE
-                        layoutParams = FrameLayout.LayoutParams(dip(50), dip(50)).apply {
-                            gravity = Gravity.CENTER
-                        }
-                    }
-
+        rl_item = RelativeLayout(context).apply {
+            backgroundColor = Color.YELLOW
+            fl_content = frameLayout {
+                id = localId
+                backgroundColor = Color.BLACK
+                layoutParams = RelativeLayout.LayoutParams(wrapContent, wrapContent)
+                iv_img = imageView {
+                    scaleType = ImageView.ScaleType.CENTER_INSIDE
+                    layoutParams = FrameLayout.LayoutParams(matchParent, matchParent)
                 }
-                iv_loading = imageView {
-                    backgroundColor = Color.BLACK
-                    layoutParams = RelativeLayout.LayoutParams(dip(30), dip(30)).apply {
-                        centerVertically()
+                iv_paly = imageView {
+                    scaleType = ImageView.ScaleType.CENTER_INSIDE
+                    setImageResource(R.drawable.im_play)
+                    visibility = View.GONE
+                    layoutParams = FrameLayout.LayoutParams(dip(50), dip(50)).apply {
+                        gravity = Gravity.CENTER
                     }
-//                    visibility = View.GONE
                 }
             }
-
-
+            iv_loading = imageView {
+                backgroundColor = Color.BLACK
+                layoutParams = RelativeLayout.LayoutParams(dip(30), dip(30)).apply {
+                    centerVertically()
+                }
+//                    visibility = View.GONE
+            }
         }
+        return rl_item!!
+
     }
 
     fun loading() {
@@ -83,13 +82,13 @@ class ImVideoView(context: Context) : RealImView(context) {
 
     override fun decoratorItemView(item: IimMsg) {
 
-
-        iv_loading?.layoutParams = (iv_loading?.layoutParams as RelativeLayout.LayoutParams).apply {
-            addRule(RelativeLayout.LEFT_OF)
-            addRule(RelativeLayout.RIGHT_OF)
-            if (item.isSelf()) leftOf(fl_content!!) else rightOf(fl_content!!)
-
-        }
+//
+//        iv_loading?.layoutParams = (iv_loading?.layoutParams as RelativeLayout.LayoutParams).apply {
+//            addRule(RelativeLayout.LEFT_OF)
+//            addRule(RelativeLayout.RIGHT_OF)
+//            if (item.isSelf()) leftOf(fl_content!!) else rightOf(fl_content!!)
+//
+//        }
         iv_loading?.isShow(item.status() == 1)
         val video = item.video()
         val videoElem = video.video as TIMVideoElem
@@ -192,6 +191,13 @@ class ImVideoView(context: Context) : RealImView(context) {
             iv_img?.scaleType = ImageView.ScaleType.CENTER_CROP
         }
         fl_content?.layoutParams = RelativeLayout.LayoutParams(newWidth, newHeight).apply {
+            if (isSelf) alignParentRight() else alignParentLeft()
+        }
+        var w = newWidth
+        if (iv_loading!!.visibility == View.VISIBLE) {
+            w = newWidth + dip(30)
+        }
+        rl_item?.layoutParams = RelativeLayout.LayoutParams(w, newHeight).apply {
             if (isSelf) alignParentRight() else alignParentLeft()
         }
         val min = Math.min(newWidth, newHeight) / 2

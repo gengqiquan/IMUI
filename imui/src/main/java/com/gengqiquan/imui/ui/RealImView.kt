@@ -60,14 +60,12 @@ abstract class RealImView(context: Context) : LinearLayout(context), ImView {
             }
             relativeLayout {
                 horizontalPadding = dip(63)
-                backgroundColor = Color.BLACK
-                itemView = relativeLayout {
-                    backgroundColor = Color.YELLOW
+
+                itemView = createItemView(this).apply {
                     id = localId
-                    createItemView(this)
                 }
+                addView(itemView)
                 iv_fail = imageView {
-                    backgroundColor=Color.RED
                     backgroundResource = R.drawable.im_fail
                 }
             }

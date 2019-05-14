@@ -25,57 +25,56 @@ class ImShareView(context: Context) : RealImView(context) {
 
     override fun floatBaseView() = ll_content!!
     override fun createItemView(contentView: RelativeLayout): View {
-        return contentView.apply {
-            ll_content = linearLayout {
-                orientation = VERTICAL
-                backgroundResource = R.drawable.im_share_msg_back
-                horizontalPadding = dip(13)
-                topPadding = dip(13)
-                layoutParams = RelativeLayout.LayoutParams(matchParent, wrapContent)
-                tv_title = textView {
-                    textColor = Color.BLACK
-                    textSize = 15f
-                    includeFontPadding = false
-                    maxLines = 2
+        ll_content = LinearLayout(context).apply {
+            orientation = VERTICAL
+            backgroundResource = R.drawable.im_share_msg_back
+            horizontalPadding = dip(13)
+            topPadding = dip(13)
+            layoutParams = RelativeLayout.LayoutParams(matchParent, wrapContent)
+            tv_title = textView {
+                textColor = Color.BLACK
+                textSize = 15f
+                includeFontPadding = false
+                maxLines = 2
 
-                }
-                linearLayout {
-                    layoutParams = LinearLayout.LayoutParams(matchParent, wrapContent).apply {
-                        topMargin = dip(10)
-                    }
-
-                    tv_desc = textView {
-                        textColor = 0xff999999.toInt()
-                        textSize = 12f
-                        includeFontPadding = false
-                        maxLines = 3
-                        layoutParams = LinearLayout.LayoutParams(0, wrapContent).apply {
-                            weight = 1f
-                        }
-                    }
-                    iv_img = imageView {
-                        layoutParams = LinearLayout.LayoutParams(dip(45), dip(45)).apply {
-                            gravity = Gravity.RIGHT xor Gravity.BOTTOM
-                            bottomMargin = dip(13)
-                        }
-                        scaleType = ImageView.ScaleType.FIT_XY
-                    }
-
-                }
-                v_line = view {
-                    backgroundColor = 0xfff0f0f0.toInt()
-                    layoutParams = LinearLayout.LayoutParams(matchParent, dip(0.5f))
-                }
-                tv_from = textView {
-                    textColor = 0xff999999.toInt()
-                    textSize = 11f
-                    gravity = Gravity.CENTER_VERTICAL
-                    includeFontPadding = false
-                    layoutParams = LinearLayout.LayoutParams(matchParent, dip(25))
-                }
             }
+            linearLayout {
+                layoutParams = LinearLayout.LayoutParams(matchParent, wrapContent).apply {
+                    topMargin = dip(10)
+                }
 
+                tv_desc = textView {
+                    textColor = 0xff999999.toInt()
+                    textSize = 12f
+                    includeFontPadding = false
+                    maxLines = 3
+                    layoutParams = LinearLayout.LayoutParams(0, wrapContent).apply {
+                        weight = 1f
+                    }
+                }
+                iv_img = imageView {
+                    layoutParams = LinearLayout.LayoutParams(dip(45), dip(45)).apply {
+                        gravity = Gravity.RIGHT xor Gravity.BOTTOM
+                        bottomMargin = dip(13)
+                    }
+                    scaleType = ImageView.ScaleType.FIT_XY
+                }
+
+            }
+            v_line = view {
+                backgroundColor = 0xfff0f0f0.toInt()
+                layoutParams = LinearLayout.LayoutParams(matchParent, dip(0.5f))
+            }
+            tv_from = textView {
+                textColor = 0xff999999.toInt()
+                textSize = 11f
+                gravity = Gravity.CENTER_VERTICAL
+                includeFontPadding = false
+                layoutParams = LinearLayout.LayoutParams(matchParent, dip(25))
+            }
         }
+
+        return ll_content!!
     }
 
 
