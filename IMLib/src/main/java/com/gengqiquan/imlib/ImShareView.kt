@@ -5,11 +5,9 @@ import android.graphics.Color
 import android.text.TextUtils
 import android.view.Gravity
 import android.view.View
-import android.view.ViewGroup
 import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.LinearLayout
-import android.widget.LinearLayout.VERTICAL
 import android.widget.TextView
 import com.gengqiquan.imlib.model.CustomElem
 import com.gengqiquan.imlib.model.CustomType
@@ -20,7 +18,7 @@ import com.gengqiquan.imui.ui.RealImView
 import com.gengqiquan.imui.ui.isShow
 import org.jetbrains.anko.*
 
-class ImShareView(context: Context, parent: ViewGroup) : RealImView(context, parent) {
+class ImShareView(context: Context) : RealImView(context) {
     var ll_content: LinearLayout? = null
     var tv_title: TextView? = null
     var tv_desc: TextView? = null
@@ -36,10 +34,7 @@ class ImShareView(context: Context, parent: ViewGroup) : RealImView(context, par
                 backgroundResource = R.drawable.im_share_msg_back
                 horizontalPadding = dip(13)
                 topPadding = dip(13)
-                layoutParams = FrameLayout.LayoutParams(matchParent, wrapContent).apply {
-                    leftMargin = dip(63)
-                    rightMargin = dip(63)
-                }
+                layoutParams = FrameLayout.LayoutParams(matchParent, wrapContent)
                 tv_title = textView {
                     textColor = Color.BLACK
                     textSize = 15f

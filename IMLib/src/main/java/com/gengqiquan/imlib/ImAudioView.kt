@@ -18,21 +18,15 @@ import com.gengqiquan.imui.ui.isShow
 import com.gengqiquan.imui.ui.singleClick
 import org.jetbrains.anko.*
 
-class ImAudioView(context: Context, parent: ViewGroup) : RealImView(context, parent) {
+class ImAudioView(context: Context) : RealImView(context) {
     var fl_voice: FrameLayout? = null
     var tv_time: TextView? = null
-    //    var tv_time_self: TextView? = null
     var iv_play: ImageView? = null
-    var ll_content: LinearLayout? = null
 
     override fun floatBaseView() = fl_voice!!
     override fun createItemView(contentView: FrameLayout): View {
         return contentView.apply {
             fl_voice = frameLayout {
-                layoutParams = FrameLayout.LayoutParams(wrapContent, wrapContent).apply {
-                    leftMargin = dip(63)
-                    rightMargin = dip(63)
-                }
                 iv_play = imageView {
                     layoutParams = FrameLayout.LayoutParams(dip(20), dip(20)).apply {
                         gravity = Gravity.RIGHT xor Gravity.CENTER_VERTICAL

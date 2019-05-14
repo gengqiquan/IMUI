@@ -1,4 +1,4 @@
-package com.gengqiquan.imui.audio
+package com.gengqiquan.imui.input
 
 import android.content.Context
 import android.graphics.Color
@@ -15,7 +15,7 @@ import com.gengqiquan.imui.help.IMHelp
 import com.gengqiquan.imui.help.ToastHelp
 import org.jetbrains.anko.*
 
-class ImAudioInputView(context: Context, val send: (Any) -> Unit) : TextView(context) {
+class ImAudioInputView(context: Context) : TextView(context) {
     private var audioCancel: Boolean = false
     private var startRecordY: Float = 0.toFloat()
 //    var inputHandler: InputHandler? = null
@@ -53,7 +53,7 @@ class ImAudioInputView(context: Context, val send: (Any) -> Unit) : TextView(con
 //                            inputHandler?.stopRecording()
 //                        }
                         if (!audioCancel) {
-                            send.invoke(
+                            IMHelp.getMsgSender(context).send(
                                 IMHelp.getMsgBuildPolicy().buildAudioMessage(
                                     IMHelp.getAudioRecorder().recordAudioPath,
                                     it.toInt()

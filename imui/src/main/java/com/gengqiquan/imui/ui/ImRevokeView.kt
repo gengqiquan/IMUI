@@ -12,7 +12,7 @@ import com.gengqiquan.imui.R
 import com.gengqiquan.imui.interfaces.IimMsg
 import org.jetbrains.anko.*
 
-class ImRevokeView(val context: Context, parent: ViewGroup) : ImView(parent) {
+class ImRevokeView(val context: Context) : ImView {
     override fun get(): View {
 
         return LinearLayout(context).apply {

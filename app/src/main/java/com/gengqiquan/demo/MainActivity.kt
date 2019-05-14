@@ -118,7 +118,7 @@ class MainActivity : AppCompatActivity() {
             }
         }
         userConfig.setUploadProgressListener { timMessage, _, _, progress ->
-            Log.d(tag, "进度" + "===" + timMessage.status().status + "==" +  + progress)
+            Log.d(tag, "进度" + "===" + timMessage.status().status + "==" + +progress)
         }
         TIMManager.getInstance().userConfig = TIMUserConfigMsgExt(userConfig)
             .setMessageRevokedListener {
@@ -218,41 +218,31 @@ class MainActivity : AppCompatActivity() {
         })
         IMHelp.registerMsgSender(this, object : IMsgSender {
 
-            override fun send(type: Int, msg: Any, senderListener: ISenderListener) {
-
+            override fun send(msg: Any, senderListener: ISenderListener?) {
+                val realMsg = RealMsg.create(msg as TIMMessage)
+                im_ui.newMsgs(realMsg)
+                senderListener?.sending()
 //                im_ui.newMsgs(RealMsg.create(msg as TIMMessage))
-                con.sendMessage(msg as TIMMessage, object : TIMValueCallBack<TIMMessage> {
+                con.sendMessage(msg, object : TIMValueCallBack<TIMMessage> {
                     override fun onSuccess(msg: TIMMessage) {
                         Log.e(tag, "onSuccess" + msg.toString())
-//                        val list = mutableListOf<IimMsg>()
-//                        list.addAll()
+                        runOnUiThread {    senderListener?.success()
+//                        im_ui.updateMsgs(RealMsg.create(msg))
+                            realMsg.forEach { it.success() }
+                            im_ui.succMsgs(realMsg)}
 
-//                    list.reverse()
-                        im_ui.newMsgs(RealMsg.create(msg))
                     }
 
                     override fun onError(p0: Int, p1: String?) {
                         Log.e(tag, "onError" + p0.toString() + ":" + p1)
+                        senderListener?.failure()
+                        realMsg.forEach { it.failure() }
+                        im_ui.failMsgs(realMsg)
                     }
                 })
             }
         })
-        im_ui.inputUI.sendAction { type, msg ->
-            con.sendMessage(msg as TIMMessage, object : TIMValueCallBack<TIMMessage> {
-                override fun onSuccess(msg: TIMMessage) {
-                    Log.e(tag, "onSuccess" + msg.toString())
-                    val list = mutableListOf<IimMsg>()
-                    list.addAll(RealMsg.create(msg))
 
-//                    list.reverse()
-                    im_ui.newMsgs(list)
-                }
-
-                override fun onError(p0: Int, p1: String?) {
-                    Log.e(tag, "onError" + p0.toString() + ":" + p1)
-                }
-            })
-        }
         im_ui.inputUI.otherProxy(object : OtherProxy {
             override fun proxy(type: Int, send: (Any) -> Unit) {
                 if (type == ButtonFactory.PICTURE) {

@@ -7,7 +7,6 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.*
 import androidx.core.widget.doOnTextChanged
 import com.gengqiquan.imui.R
-import com.gengqiquan.imui.audio.ImAudioInputView
 import com.gengqiquan.imui.help.IMHelp
 import com.gengqiquan.imui.interfaces.ISelectListener
 import com.gengqiquan.imui.interfaces.OtherProxy
@@ -38,7 +37,7 @@ class ImInputUI(context: Context) : LinearLayout(context) {
                     decorator(info)
                     onClick {
                         otherProxy?.proxy(info.type) {
-                            send.invoke(info.type, it)
+                            IMHelp.getMsgSender(context).send(it)
                         }
                     }
                 }
@@ -165,8 +164,7 @@ class ImInputUI(context: Context) : LinearLayout(context) {
                 text = "发送"
                 visibility = View.GONE
                 singleClick {
-                    send?.invoke(
-                        DefaultIMViewFactory.TEXT,
+                    IMHelp.getMsgSender(context).send(
                         IMHelp.getMsgBuildPolicy().buildTextMessage(et_text!!.text.toString())
                     )
                     et_text?.setText("")
@@ -240,18 +238,16 @@ class ImInputUI(context: Context) : LinearLayout(context) {
 
     private fun audioView(parent: LinearLayout) {
         parent.apply {
-            tv_audio = ImAudioInputView(context) {
-                send.invoke(DefaultIMViewFactory.AUDIO, it)
-            }
+            tv_audio = ImAudioInputView(context)
             addView(tv_audio)
         }
 
     }
 
 
-    fun sendAction(action: (Int, Any) -> Unit) {
-        send = action
-    }
+//    fun sendAction(action: (Int, Any) -> Unit) {
+//        send = action
+//    }
 
     fun reset() {
         if (et_text!!.isFocused) {
@@ -262,7 +258,7 @@ class ImInputUI(context: Context) : LinearLayout(context) {
         im_emoji?.gone()
     }
 
-    private var send: (Int, Any) -> Unit = { type, msg -> }
+    //    private var send: (Int, Any) -> Unit = { type, msg -> }
     private fun openKeybord(mEditText: EditText) {
         val imm = context
             .getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager

@@ -23,19 +23,19 @@ class DefaultIMViewFactory(val context: Context) : IimViewFactory {
     override fun create(parent: ViewGroup, viewType: Int): ImView? {
         return when (viewType) {
             REVOKE -> {
-                ImRevokeView(context, parent)
+                ImRevokeView(context)
             }
             TEXT -> {
-                ImTextView(context, parent)
+                ImTextView(context)
             }
             IMG -> {
-                ImImageView(context, parent)
+                ImImageView(context)
             }
             MORE_REFRESH -> {
-                IMLoadMoreView(context, parent)
+                IMLoadMoreView(context)
             }
             else -> {
-                ImUnKnowView(context, parent)
+                ImUnKnowView(context)
             }
         }
     }

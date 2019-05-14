@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
 import android.widget.ImageView
+import android.widget.LinearLayout
 import com.gengqiquan.imui.help.IMHelp
 import com.gengqiquan.imui.interfaces.DisplayListener
 import com.gengqiquan.imui.interfaces.IimMsg
@@ -15,7 +16,7 @@ import org.jetbrains.anko.imageView
 import org.jetbrains.anko.startActivity
 import org.jetbrains.anko.wrapContent
 
-class ImImageView(context: Context, parent: ViewGroup) : RealImView(context, parent) {
+class ImImageView(context: Context) : RealImView(context) {
     var iv_img: ImageView? = null
     override fun floatBaseView() = iv_img!!
 
@@ -23,10 +24,7 @@ class ImImageView(context: Context, parent: ViewGroup) : RealImView(context, par
         return contentView.apply {
             iv_img = imageView {
                 scaleType = ImageView.ScaleType.CENTER_INSIDE
-                layoutParams = FrameLayout.LayoutParams(dip(140), wrapContent).apply {
-                    leftMargin = dip(63)
-                    rightMargin = dip(63)
-                }
+                layoutParams = LinearLayout.LayoutParams(dip(140), wrapContent)
             }
         }
     }

@@ -8,6 +8,7 @@ import android.view.Gravity
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
+import android.widget.LinearLayout
 import android.widget.TextView
 import com.gengqiquan.imui.R
 import com.gengqiquan.imui.interfaces.IimMsg
@@ -17,7 +18,7 @@ import org.jetbrains.anko.textColor
 import org.jetbrains.anko.textView
 import org.jetbrains.anko.wrapContent
 
-class ImTextView(context: Context, parent: ViewGroup) : RealImView(context, parent) {
+class ImTextView(context: Context) : RealImView(context) {
     override fun floatBaseView() = tv_content!!
 
     var tv_content: TextView? = null
@@ -37,10 +38,7 @@ class ImTextView(context: Context, parent: ViewGroup) : RealImView(context, pare
                 textColor = Color.BLACK
                 textSize = 18f
                 includeFontPadding = false
-                layoutParams = FrameLayout.LayoutParams(wrapContent, wrapContent).apply {
-                    leftMargin = dip(63)
-                    rightMargin = dip(63)
-                }
+                layoutParams = FrameLayout.LayoutParams(wrapContent, wrapContent)
             }
         }
     }

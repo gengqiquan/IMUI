@@ -16,20 +16,20 @@ class TIMViewFactory(val context: Context) : IimViewFactory {
         if (viewType > 999) {
             return when (viewType / 1000) {
                 1 -> {
-                    ImPreSendView(context, parent)
+                    ImPreSendView(context)
                 }
                 else -> null
             }
         }
         return when (viewType) {
             DefaultIMViewFactory.AUDIO -> {
-                ImAudioView(context, parent)
+                ImAudioView(context)
             }
             DefaultIMViewFactory.VIDEO -> {
-                ImVideoView(context, parent)
+                ImVideoView(context)
             }
             DefaultIMViewFactory.SHARE -> {
-                ImShareView(context, parent)
+                ImShareView(context)
             }
             else -> null
         }

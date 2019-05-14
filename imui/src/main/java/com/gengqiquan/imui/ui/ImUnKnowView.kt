@@ -10,7 +10,7 @@ import com.gengqiquan.imui.R
 import com.gengqiquan.imui.interfaces.IimMsg
 import org.jetbrains.anko.*
 
-class ImUnKnowView(val context: Context, parent: ViewGroup) : ImView(parent) {
+class ImUnKnowView(val context: Context) : ImView {
     override fun get(): View {
         return FrameLayout(context).apply {
 

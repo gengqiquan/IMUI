@@ -1,18 +1,12 @@
 package com.gengqiquan.imlib;
 
 import android.annotation.SuppressLint;
-import android.text.TextUtils;
 import androidx.annotation.MainThread;
 import com.gengqiquan.imlib.model.CustomElem;
-import com.gengqiquan.imlib.video.util.FileUtil;
-import com.gengqiquan.imui.help.IMHelp;
 import com.gengqiquan.imui.interfaces.IimMsg;
-import com.gengqiquan.imui.interfaces.IMediaListener;
 import com.gengqiquan.imui.model.ImImage;
 import com.gengqiquan.imui.model.ImVideo;
-import com.gengqiquan.imui.ui.DefaultIMViewFactory;
 import com.tencent.imsdk.*;
-import com.tencent.imsdk.conversation.ProgressInfo;
 import com.tencent.imsdk.ext.message.TIMMessageExt;
 import org.jetbrains.annotations.NotNull;
 
@@ -205,5 +199,52 @@ public class RealMsg implements IimMsg {
     @Override
     public Object extra() {
         return customData;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof RealMsg)) return false;
+
+        RealMsg realMsg = (RealMsg) o;
+
+        if (timMsg != null ? !timMsg.equals(realMsg.timMsg) : realMsg.timMsg != null) return false;
+        return elem != null ? elem.equals(realMsg.elem) : realMsg.elem == null;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = timMsg != null ? timMsg.hashCode() : 0;
+        result = 31 * result + (elem != null ? elem.hashCode() : 0);
+        return result;
+    }
+
+    int status = 0;
+
+    public void failure() {
+        status = 3;
+    }
+
+    public void success() {
+        status = 2;
+    }
+
+    @Override
+    public @IimMsg.Companion.SendType
+    int status() {
+        if (status > 1) {
+            return status;
+        }
+
+        if (TIMMessageStatus.Sending == timMsg.status()) {
+            status = 1;
+        }
+        if (TIMMessageStatus.SendSucc == timMsg.status()) {
+            status = 2;
+        }
+        if (TIMMessageStatus.SendFail == timMsg.status()) {
+            status = 3;
+        }
+        return status;
     }
 }

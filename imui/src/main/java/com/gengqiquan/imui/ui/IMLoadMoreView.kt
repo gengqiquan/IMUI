@@ -9,7 +9,7 @@ import android.widget.LinearLayout
 import com.gengqiquan.imui.interfaces.IimMsg
 import org.jetbrains.anko.*
 
-class IMLoadMoreView(val context: Context, parent: ViewGroup) : ImView(parent) {
+class IMLoadMoreView(val context: Context) : ImView {
     var itemView: LinearLayout? = null
     override fun get(): View {
         itemView = LinearLayout(context).apply {

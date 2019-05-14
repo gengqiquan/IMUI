@@ -1,5 +1,6 @@
 package com.gengqiquan.imlib
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Color
 import android.text.TextUtils
@@ -9,6 +10,9 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
 import android.widget.ImageView
+import android.widget.LinearLayout
+import android.widget.RelativeLayout
+import androidx.annotation.IdRes
 import com.gengqiquan.imlib.video.VideoViewActivity
 import com.gengqiquan.imlib.video.util.FileUtil
 import com.gengqiquan.imui.help.IMHelp
@@ -20,37 +24,48 @@ import com.tencent.imsdk.TIMVideoElem
 import com.tencent.imsdk.conversation.ProgressInfo
 import org.jetbrains.anko.*
 
-class ImVideoView(context: Context, parent: ViewGroup) : RealImView(context, parent) {
+class ImVideoView(context: Context) : RealImView(context) {
     var iv_img: ImageView? = null
     var iv_paly: ImageView? = null
     var iv_loading: ImageView? = null
     var fl_content: FrameLayout? = null
+    //    var ll_content: RelativeLayout? = null
     override fun floatBaseView(): View = iv_img!!
+
+    @SuppressLint("ResourceType")
+    @IdRes
+    val localId = 0xff9900
 
     override fun createItemView(contentView: FrameLayout): View {
         return contentView.apply {
-            fl_content = frameLayout {
-                layoutParams = FrameLayout.LayoutParams(wrapContent, wrapContent).apply {
-                    leftMargin = dip(63)
-                    rightMargin = dip(63)
-                }
-                iv_img = imageView {
-                    scaleType = ImageView.ScaleType.CENTER_INSIDE
-                    layoutParams = FrameLayout.LayoutParams(matchParent, matchParent)
-                }
-                iv_paly = imageView {
-                    scaleType = ImageView.ScaleType.CENTER_INSIDE
-                    setImageResource(R.drawable.im_play)
-                    visibility = View.GONE
-                    layoutParams = FrameLayout.LayoutParams(dip(50), dip(50)).apply {
-                        gravity = Gravity.CENTER
+            relativeLayout {
+                layoutParams = RelativeLayout.LayoutParams(matchParent, wrapContent)
+                gravity = Gravity.CENTER_VERTICAL
+
+                fl_content = frameLayout {
+                    id = localId
+                    layoutParams = RelativeLayout.LayoutParams(wrapContent, wrapContent)
+                    iv_img = imageView {
+                        scaleType = ImageView.ScaleType.CENTER_INSIDE
+                        layoutParams = FrameLayout.LayoutParams(matchParent, matchParent)
                     }
+                    iv_paly = imageView {
+                        scaleType = ImageView.ScaleType.CENTER_INSIDE
+                        setImageResource(R.drawable.im_play)
+                        visibility = View.GONE
+                        layoutParams = FrameLayout.LayoutParams(dip(50), dip(50)).apply {
+                            gravity = Gravity.CENTER
+                        }
+                    }
+
                 }
-                iv_loading = CircleImageView(context, Color.parseColor("#ffffff")).apply {
-                    layoutParams = ViewGroup.LayoutParams(dip(30), dip(30))
-                    visibility = View.GONE
+                iv_loading = imageView {
+                    backgroundColor = Color.BLACK
+                    layoutParams = RelativeLayout.LayoutParams(dip(30), dip(30))
+//                    visibility = View.GONE
                 }
             }
+
 
         }
     }
@@ -66,11 +81,27 @@ class ImVideoView(context: Context, parent: ViewGroup) : RealImView(context, par
         })
     }
 
-    override fun decoratorItemView(item: IimMsg) {
-        fl_content?.layoutParams = (fl_content?.layoutParams as FrameLayout.LayoutParams).apply {
-            gravity = if (item.isSelf()) Gravity.RIGHT else Gravity.LEFT
-        }
+    override fun fail() {
+        super.fail()
+        iv_loading?.gone()
+    }
 
+    override fun success() {
+        super.success()
+        Log.d("RealImView","自容器success")
+        iv_loading?.gone()
+    }
+
+    override fun decoratorItemView(item: IimMsg) {
+        fl_content?.layoutParams = (fl_content?.layoutParams as RelativeLayout.LayoutParams).apply {
+            if (item.isSelf()) alignParentRight() else alignParentLeft()
+        }
+        iv_loading?.layoutParams = (iv_loading?.layoutParams as RelativeLayout.LayoutParams).apply {
+            if (item.isSelf()) leftOf(fl_content!!) else rightOf(fl_content!!)
+            centerVertically()
+        }
+        Log.d("RealImView","自容器decoratorItemView")
+        iv_loading?.isShow(item.status() == 1)
         val video = item.video()
         val videoElem = video.video as TIMVideoElem
 
@@ -108,7 +139,7 @@ class ImVideoView(context: Context, parent: ViewGroup) : RealImView(context, par
         }
         fun ready(path: String) {
             videoElem.videoPath = path
-            iv_loading?.gone()
+//            iv_loading?.gone()
             iv_paly?.show()
             iv_img?.singleClick {
                 context.startActivity<VideoViewActivity>(
@@ -149,7 +180,7 @@ class ImVideoView(context: Context, parent: ViewGroup) : RealImView(context, par
     fun reLayout(w: Int, h: Int, isSelf: Boolean) {
         iv_img?.setImageDrawable(null)
         iv_paly?.gone()
-        iv_loading?.gone()
+//        iv_loading?.gone()
         val max = dip(140)
         if (h <= 0) {
             return

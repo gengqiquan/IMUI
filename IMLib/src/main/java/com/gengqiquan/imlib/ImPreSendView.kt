@@ -2,10 +2,8 @@ package com.gengqiquan.imlib
 
 import android.content.Context
 import android.graphics.Color
-import android.text.TextUtils
 import android.view.Gravity
 import android.view.View
-import android.view.ViewGroup
 import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.LinearLayout
@@ -15,17 +13,14 @@ import com.gengqiquan.imlib.model.CustomElem
 import com.gengqiquan.imlib.model.CustomType
 import com.gengqiquan.imlib.model.ShareElem
 import com.gengqiquan.imui.help.IMHelp
-import com.gengqiquan.imui.input.ButtonFactory
 import com.gengqiquan.imui.interfaces.ISenderListener
 import com.gengqiquan.imui.interfaces.IimMsg
 import com.gengqiquan.imui.ui.ImView
-import com.gengqiquan.imui.ui.RealImView
-import com.gengqiquan.imui.ui.isShow
 import com.gengqiquan.imui.ui.singleClick
 import com.tencent.imsdk.ext.message.TIMMessageExt
 import org.jetbrains.anko.*
 
-class ImPreSendView(val context: Context, parent: ViewGroup) : ImView(parent) {
+class ImPreSendView(val context: Context) : ImView {
     override fun get(): View {
         return LinearLayout(context).apply {
 
@@ -88,9 +83,18 @@ class ImPreSendView(val context: Context, parent: ViewGroup) : ImView(parent) {
                 IMHelp.getImageDisplayer().display(data.msg.pic_url, iv_img!!)
                 tv_send?.singleClick {
                     TIMMessageExt(item.realData()).customInt = 0
-                    IMHelp.getMsgSender(context)?.send(ButtonFactory.CAR, item.realData(), object : ISenderListener {
-                        override fun statusChange(type: Int) {
+                    IMHelp.getMsgSender(context)?.send(item.realData(), object : ISenderListener {
+                        override fun waiting() {
 
+                        }
+
+                        override fun sending() {
+                        }
+
+                        override fun success() {
+                        }
+
+                        override fun failure() {
                         }
                     })
                 }

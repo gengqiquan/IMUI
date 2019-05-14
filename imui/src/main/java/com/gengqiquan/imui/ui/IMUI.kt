@@ -70,11 +70,30 @@ class IMUI(context: Context, attrs: AttributeSet?) : LinearLayout(context, attrs
         scrollToNeed(data.size - 1)
     }
 
-    fun newMsg(msg: IimMsg) {
-        allInit = 1
-        data.add(msg)
-        uiAdapter.notifyItemInserted(data.size)
-        scrollToNeed(data.size - 1)
+    fun failMsgs(msgs: List<IimMsg>) {
+        msgs.forEach {
+            val index = data.indexOf(it)
+            if (index >= 0) {
+                val imView = linearLayoutManager.findViewByPosition(index) as RealImView? ?: return
+                imView.fail()
+            }
+
+        }
+
+    }
+
+    fun succMsgs(msgs: List<IimMsg>) {
+        msgs.forEach {
+            val index = data.indexOf(it)
+            if (index >= 0) {
+
+                val imView = linearLayoutManager.findViewByPosition(index+allInit)
+
+                (imView as RealImView?)?.success()
+            }
+
+        }
+
     }
 
     fun delete(any: Any) {
