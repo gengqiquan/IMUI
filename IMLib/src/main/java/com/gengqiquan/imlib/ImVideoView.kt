@@ -36,12 +36,10 @@ class ImVideoView(context: Context) : RealImView(context) {
     @IdRes
     val localId = 0xff9900
 
-    override fun createItemView(contentView: FrameLayout): View {
+    override fun createItemView(contentView: RelativeLayout): View {
         return contentView.apply {
             relativeLayout {
-                layoutParams = RelativeLayout.LayoutParams(matchParent, wrapContent)
                 gravity = Gravity.CENTER_VERTICAL
-
                 fl_content = frameLayout {
                     id = localId
                     layoutParams = RelativeLayout.LayoutParams(wrapContent, wrapContent)
@@ -61,7 +59,9 @@ class ImVideoView(context: Context) : RealImView(context) {
                 }
                 iv_loading = imageView {
                     backgroundColor = Color.BLACK
-                    layoutParams = RelativeLayout.LayoutParams(dip(30), dip(30))
+                    layoutParams = RelativeLayout.LayoutParams(dip(30), dip(30)).apply {
+                        centerVertically()
+                    }
 //                    visibility = View.GONE
                 }
             }
@@ -82,14 +82,15 @@ class ImVideoView(context: Context) : RealImView(context) {
     }
 
     override fun decoratorItemView(item: IimMsg) {
-        fl_content?.layoutParams = (fl_content?.layoutParams as RelativeLayout.LayoutParams).apply {
-            if (item.isSelf()) alignParentRight() else alignParentLeft()
-        }
+
+
         iv_loading?.layoutParams = (iv_loading?.layoutParams as RelativeLayout.LayoutParams).apply {
+            addRule(RelativeLayout.LEFT_OF)
+            addRule(RelativeLayout.RIGHT_OF)
             if (item.isSelf()) leftOf(fl_content!!) else rightOf(fl_content!!)
-            centerVertically()
+
         }
-        Log.d("RealImView","自容器decoratorItemView")
+        Log.d("RealImView", "自容器decoratorItemView")
         iv_loading?.isShow(item.status() == 1)
         val video = item.video()
         val videoElem = video.video as TIMVideoElem
@@ -191,10 +192,8 @@ class ImVideoView(context: Context) : RealImView(context) {
             newHeight = max
             iv_img?.scaleType = ImageView.ScaleType.CENTER_CROP
         }
-        iv_img?.layoutParams = (iv_img?.layoutParams as FrameLayout.LayoutParams).apply {
-            gravity = if (isSelf) Gravity.RIGHT else Gravity.LEFT
-            width = newWidth
-            height = newHeight
+        fl_content?.layoutParams = RelativeLayout.LayoutParams(newWidth, newHeight).apply {
+            if (isSelf) alignParentRight() else alignParentLeft()
         }
         val min = Math.min(newWidth, newHeight) / 2
         iv_paly?.layoutParams = FrameLayout.LayoutParams(min, min).apply {

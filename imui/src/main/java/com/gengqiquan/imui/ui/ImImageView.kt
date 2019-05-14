@@ -8,28 +8,26 @@ import android.view.ViewGroup
 import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.LinearLayout
+import android.widget.RelativeLayout
 import com.gengqiquan.imui.help.IMHelp
 import com.gengqiquan.imui.interfaces.DisplayListener
 import com.gengqiquan.imui.interfaces.IimMsg
-import org.jetbrains.anko.dip
-import org.jetbrains.anko.imageView
-import org.jetbrains.anko.startActivity
-import org.jetbrains.anko.wrapContent
+import org.jetbrains.anko.*
 
 class ImImageView(context: Context) : RealImView(context) {
     var iv_img: ImageView? = null
     override fun floatBaseView() = iv_img!!
 
-    override fun createItemView(contentView: FrameLayout): View {
+    override fun createItemView(contentView: RelativeLayout): View {
         return contentView.apply {
             iv_img = imageView {
                 scaleType = ImageView.ScaleType.CENTER_INSIDE
-                layoutParams = LinearLayout.LayoutParams(dip(140), wrapContent)
             }
         }
     }
 
     override fun decoratorItemView(item: IimMsg) {
+        iv_img?.setImageDrawable(null)
         val img = item.img()
         val url = img.url ?: return
         val w = img.width
@@ -59,12 +57,10 @@ class ImImageView(context: Context) : RealImView(context) {
             newHeight = max
             iv_img?.scaleType = ImageView.ScaleType.CENTER_CROP
         }
-        iv_img?.layoutParams = (iv_img?.layoutParams as FrameLayout.LayoutParams).apply {
-            gravity = if (item.isSelf()) Gravity.RIGHT else Gravity.LEFT
-            width = newWidth
-            height = newHeight
-
+        iv_img?.layoutParams = RelativeLayout.LayoutParams(newWidth, newHeight).apply {
+            if (item.isSelf()) alignParentRight() else alignParentLeft()
         }
+
         IMHelp.getImageDisplayer().display(url, iv_img!!, object : DisplayListener {
             override fun ready() {
                 iv_img?.singleClick {

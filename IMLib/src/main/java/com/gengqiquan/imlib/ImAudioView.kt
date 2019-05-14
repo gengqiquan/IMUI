@@ -24,7 +24,7 @@ class ImAudioView(context: Context) : RealImView(context) {
     var iv_play: ImageView? = null
 
     override fun floatBaseView() = fl_voice!!
-    override fun createItemView(contentView: FrameLayout): View {
+    override fun createItemView(contentView: RelativeLayout): View {
         return contentView.apply {
             fl_voice = frameLayout {
                 iv_play = imageView {
@@ -63,9 +63,8 @@ class ImAudioView(context: Context) : RealImView(context) {
 
         m = dip(50)
         var length = dip(65) + getLength(0, item.duration())
-        fl_voice?.layoutParams = (fl_voice?.layoutParams as FrameLayout.LayoutParams).apply {
-            width = length
-            gravity = if (item.isSelf()) Gravity.RIGHT else Gravity.LEFT
+        fl_voice?.layoutParams =RelativeLayout.LayoutParams(length, wrapContent).apply {
+            if (item.isSelf()) alignParentRight() else alignParentLeft()
         }
         tv_time?.layoutParams = (tv_time?.layoutParams as FrameLayout.LayoutParams).apply {
             gravity = (if (item.isSelf()) Gravity.RIGHT else Gravity.LEFT) xor Gravity.CENTER_VERTICAL

@@ -13,8 +13,8 @@ import org.jetbrains.anko.*
 class ImUnKnowView(val context: Context) : ImView {
     override fun get(): View {
         return FrameLayout(context).apply {
-
-            textView { }.apply {
+            layoutParams = FrameLayout.LayoutParams(matchParent, wrapContent)
+            textView {
                 textColor = Color.BLACK
                 textSize = 14f
                 backgroundResource = R.drawable.im_edit_back

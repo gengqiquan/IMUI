@@ -9,14 +9,12 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
 import android.widget.LinearLayout
+import android.widget.RelativeLayout
 import android.widget.TextView
 import com.gengqiquan.imui.R
 import com.gengqiquan.imui.interfaces.IimMsg
 import com.gengqiquan.imui.model.MenuAction
-import org.jetbrains.anko.dip
-import org.jetbrains.anko.textColor
-import org.jetbrains.anko.textView
-import org.jetbrains.anko.wrapContent
+import org.jetbrains.anko.*
 
 class ImTextView(context: Context) : RealImView(context) {
     override fun floatBaseView() = tv_content!!
@@ -32,13 +30,12 @@ class ImTextView(context: Context) : RealImView(context) {
         return list
     }
 
-    override fun createItemView(contentView: FrameLayout): View {
+    override fun createItemView(contentView: RelativeLayout): View {
         return contentView.apply {
             tv_content = textView {
                 textColor = Color.BLACK
                 textSize = 18f
                 includeFontPadding = false
-                layoutParams = FrameLayout.LayoutParams(wrapContent, wrapContent)
             }
         }
     }
@@ -46,8 +43,8 @@ class ImTextView(context: Context) : RealImView(context) {
 
     override fun decoratorItemView(item: IimMsg) {
         tv_content?.text = item.text()
-        tv_content?.layoutParams = (tv_content?.layoutParams as FrameLayout.LayoutParams).apply {
-            gravity = if (item.isSelf()) Gravity.RIGHT else Gravity.LEFT
+        tv_content?.layoutParams = RelativeLayout.LayoutParams(wrapContent, wrapContent).apply {
+            if (item.isSelf()) alignParentRight() else alignParentLeft()
         }
         tv_content?.setBackgroundResource(if (item.isSelf()) R.drawable.im_text_self else R.drawable.im_text)
     }

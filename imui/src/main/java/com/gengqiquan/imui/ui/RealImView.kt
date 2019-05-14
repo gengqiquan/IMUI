@@ -1,14 +1,14 @@
 package com.gengqiquan.imui.ui
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Color
 import android.util.Log
 import android.view.Gravity
 import android.view.View
 import android.view.ViewGroup
-import android.widget.FrameLayout
-import android.widget.LinearLayout
-import android.widget.TextView
+import android.widget.*
+import androidx.annotation.IdRes
 import com.gengqiquan.imui.R
 import com.gengqiquan.imui.help.LongPressHelp
 import com.gengqiquan.imui.interfaces.IimMsg
@@ -16,13 +16,17 @@ import com.gengqiquan.imui.model.MenuAction
 import org.jetbrains.anko.*
 
 abstract class RealImView(context: Context) : LinearLayout(context), ImView {
-    //    private var itemView: View? = null
+
     private var tv_header: TextView? = null
     private var tv_time: TextView? = null
     override fun get(): View {
 
         return this
     }
+
+    @SuppressLint("ResourceType")
+    @IdRes
+    private val localId = 0xff8800
 
     init {
         orientation = LinearLayout.VERTICAL
@@ -54,19 +58,38 @@ abstract class RealImView(context: Context) : LinearLayout(context), ImView {
                     rightMargin = dip(15)
                 }
             }
-            frameLayout {
+            relativeLayout {
                 horizontalPadding = dip(63)
-                createItemView(this)
+                iv_fail = imageView {
+                    backgroundColor = Color.BLACK
+                }
+                itemView = relativeLayout {
+                    id = localId
+                    createItemView(this)
+                }
             }
 
         }
     }
 
-    abstract fun createItemView(contentView: FrameLayout): View
+    private var iv_fail: ImageView? = null
+    private var itemView: View? = null
+    abstract fun createItemView(contentView: RelativeLayout): View
+
     override fun decorator(item: IimMsg) {
         tv_header?.layoutParams = (tv_header?.layoutParams as FrameLayout.LayoutParams).apply {
             gravity = if (item.isSelf()) Gravity.RIGHT else Gravity.LEFT
         }
+        itemView?.layoutParams = RelativeLayout.LayoutParams(wrapContent, wrapContent).apply {
+//            addRule(RelativeLayout.ALIGN_PARENT_RIGHT)
+//            addRule(RelativeLayout.ALIGN_PARENT_LEFT)
+            if (item.isSelf()) alignParentRight() else alignParentLeft()
+        }
+        iv_fail?.layoutParams =  RelativeLayout.LayoutParams(dip(30), dip(30)).apply {
+            centerVertically()
+            if (item.isSelf()) leftOf(localId) else rightOf(localId)
+        }
+        iv_fail?.isShow(item.status() == 3)
         var name = item.sender().toString()
         if (name.length > 2) {
             name = name.substring(name.length - 2)

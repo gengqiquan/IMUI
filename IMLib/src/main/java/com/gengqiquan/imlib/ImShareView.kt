@@ -5,10 +5,7 @@ import android.graphics.Color
 import android.text.TextUtils
 import android.view.Gravity
 import android.view.View
-import android.widget.FrameLayout
-import android.widget.ImageView
-import android.widget.LinearLayout
-import android.widget.TextView
+import android.widget.*
 import com.gengqiquan.imlib.model.CustomElem
 import com.gengqiquan.imlib.model.CustomType
 import com.gengqiquan.imlib.model.ShareElem
@@ -27,14 +24,14 @@ class ImShareView(context: Context) : RealImView(context) {
     var v_line: View? = null
 
     override fun floatBaseView() = ll_content!!
-    override fun createItemView(contentView: FrameLayout): View {
+    override fun createItemView(contentView: RelativeLayout): View {
         return contentView.apply {
             ll_content = linearLayout {
                 orientation = VERTICAL
                 backgroundResource = R.drawable.im_share_msg_back
                 horizontalPadding = dip(13)
                 topPadding = dip(13)
-                layoutParams = FrameLayout.LayoutParams(matchParent, wrapContent)
+                layoutParams = RelativeLayout.LayoutParams(matchParent, wrapContent)
                 tv_title = textView {
                     textColor = Color.BLACK
                     textSize = 15f
