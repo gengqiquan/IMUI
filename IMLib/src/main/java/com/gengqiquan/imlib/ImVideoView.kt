@@ -81,17 +81,6 @@ class ImVideoView(context: Context) : RealImView(context) {
         })
     }
 
-    override fun fail() {
-        super.fail()
-        iv_loading?.gone()
-    }
-
-    override fun success() {
-        super.success()
-        Log.d("RealImView","自容器success")
-        iv_loading?.gone()
-    }
-
     override fun decoratorItemView(item: IimMsg) {
         fl_content?.layoutParams = (fl_content?.layoutParams as RelativeLayout.LayoutParams).apply {
             if (item.isSelf()) alignParentRight() else alignParentLeft()

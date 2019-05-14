@@ -16,14 +16,15 @@ import com.gengqiquan.imui.model.MenuAction
 import org.jetbrains.anko.*
 
 abstract class RealImView(context: Context) : LinearLayout(context), ImView {
-//    private var itemView: View? = null
+    //    private var itemView: View? = null
     private var tv_header: TextView? = null
     private var tv_time: TextView? = null
     override fun get(): View {
 
         return this
     }
-init {
+
+    init {
         orientation = LinearLayout.VERTICAL
         layoutParams = ViewGroup.LayoutParams(matchParent, wrapContent).apply {
             topPadding = dip(15)
@@ -59,12 +60,9 @@ init {
             }
 
         }
-}
-    abstract fun createItemView(contentView: FrameLayout): View
-    open fun fail() {}
-    open fun success() {
-        Log.d("RealImView","父容器success")
     }
+
+    abstract fun createItemView(contentView: FrameLayout): View
     override fun decorator(item: IimMsg) {
         tv_header?.layoutParams = (tv_header?.layoutParams as FrameLayout.LayoutParams).apply {
             gravity = if (item.isSelf()) Gravity.RIGHT else Gravity.LEFT
@@ -93,7 +91,8 @@ init {
         return actions
     }
 
-//    fun dip(value: Int) =this.dip(value)
+    //    fun dip(value: Int) =this.dip(value)
     abstract fun decoratorItemView(item: IimMsg)
+
     abstract fun floatBaseView(): View
 }

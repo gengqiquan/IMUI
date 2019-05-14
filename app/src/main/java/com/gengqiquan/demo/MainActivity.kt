@@ -226,10 +226,10 @@ class MainActivity : AppCompatActivity() {
                 con.sendMessage(msg, object : TIMValueCallBack<TIMMessage> {
                     override fun onSuccess(msg: TIMMessage) {
                         Log.e(tag, "onSuccess" + msg.toString())
-                        runOnUiThread {    senderListener?.success()
+                        senderListener?.success()
 //                        im_ui.updateMsgs(RealMsg.create(msg))
-                            realMsg.forEach { it.success() }
-                            im_ui.succMsgs(realMsg)}
+                        realMsg.forEach { it.success() }
+                        im_ui.updateMsgs(realMsg)
 
                     }
 
@@ -237,7 +237,7 @@ class MainActivity : AppCompatActivity() {
                         Log.e(tag, "onError" + p0.toString() + ":" + p1)
                         senderListener?.failure()
                         realMsg.forEach { it.failure() }
-                        im_ui.failMsgs(realMsg)
+                        im_ui.updateMsgs(realMsg)
                     }
                 })
             }
