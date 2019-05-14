@@ -85,7 +85,7 @@ class IMUI(context: Context, attrs: AttributeSet?) : LinearLayout(context, attrs
         val index = data.indexOf(any)
         if (index > -1) {
             data.removeAt(index)
-            uiAdapter.notifyItemRemoved(index)
+            uiAdapter.notifyItemRemoved(index+allInit)
         }
     }
 

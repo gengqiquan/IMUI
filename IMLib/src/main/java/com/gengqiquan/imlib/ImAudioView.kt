@@ -25,26 +25,25 @@ class ImAudioView(context: Context) : RealImView(context) {
 
     override fun floatBaseView() = fl_voice!!
     override fun createItemView(contentView: RelativeLayout): View {
-        return contentView.apply {
-            fl_voice = frameLayout {
-                iv_play = imageView {
-                    layoutParams = FrameLayout.LayoutParams(dip(20), dip(20)).apply {
-                        gravity = Gravity.RIGHT xor Gravity.CENTER_VERTICAL
-                    }
+        fl_voice = FrameLayout(context).apply {
+            iv_play = imageView {
+                layoutParams = FrameLayout.LayoutParams(dip(20), dip(20)).apply {
+                    gravity = Gravity.RIGHT xor Gravity.CENTER_VERTICAL
                 }
-                tv_time = textView {
-                    textColor = Color.BLACK
-                    textSize = 15f
-                    includeFontPadding = false
-                    singleLine = true
-                    layoutParams = FrameLayout.LayoutParams(wrapContent, wrapContent).apply {
-                        gravity = Gravity.RIGHT xor Gravity.CENTER_VERTICAL
-                    }
+            }
+            tv_time = textView {
+                textColor = Color.BLACK
+                textSize = 15f
+                includeFontPadding = false
+                singleLine = true
+                layoutParams = FrameLayout.LayoutParams(wrapContent, wrapContent).apply {
+                    gravity = Gravity.RIGHT xor Gravity.CENTER_VERTICAL
                 }
-
             }
 
         }
+        return fl_voice!!
+
     }
 
     private var m = 1
@@ -63,7 +62,7 @@ class ImAudioView(context: Context) : RealImView(context) {
 
         m = dip(50)
         var length = dip(65) + getLength(0, item.duration())
-        fl_voice?.layoutParams =RelativeLayout.LayoutParams(length, wrapContent).apply {
+        fl_voice?.layoutParams = RelativeLayout.LayoutParams(length, wrapContent).apply {
             if (item.isSelf()) alignParentRight() else alignParentLeft()
         }
         tv_time?.layoutParams = (tv_time?.layoutParams as FrameLayout.LayoutParams).apply {

@@ -7,7 +7,9 @@ public interface IMsgBuildPolicy {
 
     Object buildAudioMessage(String recordPath, int duration);
 
-    Object buildImgMessage(List<String> paths);
+    List<Object> buildImgMessageList(List<String> paths);
+
+    Object buildImgMessage(String path);
 
     Object buildCustomMessage(String json);
 

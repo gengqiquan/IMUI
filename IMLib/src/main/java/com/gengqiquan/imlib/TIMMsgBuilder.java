@@ -5,6 +5,7 @@ import com.tencent.imsdk.*;
 import com.tencent.imsdk.ext.message.TIMMessageExt;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class TIMMsgBuilder implements IMsgBuildPolicy {
@@ -29,17 +30,28 @@ public class TIMMsgBuilder implements IMsgBuildPolicy {
         return TimMsg;
     }
 
-    @NotNull
     @Override
-    public TIMMessage buildImgMessage(@NotNull List<String> paths) {
-        TIMMessage TimMsg = new TIMMessage();
+    public List<Object> buildImgMessageList(List<String> paths) {
+        List<Object> list = new ArrayList<>();
         for (String path : paths) {
+            TIMMessage TimMsg = new TIMMessage();
             TIMImageElem elem = new TIMImageElem();
             elem.setPath(path);
             TimMsg.addElement(elem);
+            list.add(TimMsg);
         }
+        return list;
+    }
+
+    @Override
+    public TIMMessage buildImgMessage(String path) {
+        TIMMessage TimMsg = new TIMMessage();
+        TIMImageElem elem = new TIMImageElem();
+        elem.setPath(path);
+        TimMsg.addElement(elem);
         return TimMsg;
     }
+
 
     @Override
     public TIMMessage buildCustomMessage(String json) {

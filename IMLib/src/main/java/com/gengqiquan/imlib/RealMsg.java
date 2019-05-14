@@ -1,6 +1,8 @@
 package com.gengqiquan.imlib;
 
 import android.annotation.SuppressLint;
+import android.graphics.BitmapFactory;
+import android.util.Log;
 import androidx.annotation.MainThread;
 import com.gengqiquan.imlib.model.CustomElem;
 import com.gengqiquan.imui.interfaces.IimMsg;
@@ -41,7 +43,16 @@ public class RealMsg implements IimMsg {
             Date time = i == timMsg.getElementCount() - 1 ? new Date(timMsg.timestamp() * 1000) : null;
             list.add(new RealMsg(timMsg, elem, time));
         }
+        if (timMsg.getElementCount() > 1) {
+            Log.e("getElementCount", timMsg.getElementCount() + "");
+        }
         return list;
+    }
+
+    public static RealMsg decorate(TIMMessage timMsg) {
+        TIMElem elem = timMsg.getElement(0);
+        Date time = new Date(timMsg.timestamp() * 1000);
+        return new RealMsg(timMsg, elem, time);
     }
 
     @Override
@@ -56,6 +67,15 @@ public class RealMsg implements IimMsg {
     public ImImage img() {
         if (elem.getType() != TIMElemType.Image) {
             throw new IllegalArgumentException("can not call img() that is not of the type: image");
+        }
+        TIMImageElem timImageElem = ((TIMImageElem) elem);
+        if (timImageElem.getImageList().size() == 0) {
+            BitmapFactory.Options options = new BitmapFactory.Options();
+            options.inJustDecodeBounds = true;
+            BitmapFactory.decodeFile(timImageElem.getPath(), options);
+            int imgWidth = options.outWidth;
+            int imgHeight = options.outHeight;
+            return new ImImage(timImageElem.getPath(), imgWidth, imgHeight);
         }
         TIMImage timImage = ((TIMImageElem) elem).getImageList().get(0);
         return new ImImage(timImage.getUrl(), timImage.getWidth(), timImage.getHeight());
@@ -203,13 +223,16 @@ public class RealMsg implements IimMsg {
 
     @Override
     public boolean equals(Object o) {
+
+
         if (this == o) return true;
         if (!(o instanceof RealMsg)) return false;
 
         RealMsg realMsg = (RealMsg) o;
-
-        if (timMsg != null ? !timMsg.equals(realMsg.timMsg) : realMsg.timMsg != null) return false;
-        return elem != null ? elem.equals(realMsg.elem) : realMsg.elem == null;
+        if (timMsg == null || realMsg.timMsg == null || elem == null || realMsg.elem == null) {
+            return false;
+        }
+        return timMsg.getMsgUniqueId() == realMsg.timMsg.getMsgUniqueId();
     }
 
     @Override

@@ -60,15 +60,17 @@ abstract class RealImView(context: Context) : LinearLayout(context), ImView {
             }
             relativeLayout {
                 horizontalPadding = dip(63)
-                iv_fail = imageView {
-                    backgroundColor = Color.BLACK
-                }
+                backgroundColor = Color.BLACK
                 itemView = relativeLayout {
+                    backgroundColor = Color.YELLOW
                     id = localId
                     createItemView(this)
                 }
+                iv_fail = imageView {
+                    backgroundColor=Color.RED
+                    backgroundResource = R.drawable.im_fail
+                }
             }
-
         }
     }
 
@@ -81,15 +83,13 @@ abstract class RealImView(context: Context) : LinearLayout(context), ImView {
             gravity = if (item.isSelf()) Gravity.RIGHT else Gravity.LEFT
         }
         itemView?.layoutParams = RelativeLayout.LayoutParams(wrapContent, wrapContent).apply {
-//            addRule(RelativeLayout.ALIGN_PARENT_RIGHT)
-//            addRule(RelativeLayout.ALIGN_PARENT_LEFT)
             if (item.isSelf()) alignParentRight() else alignParentLeft()
         }
-        iv_fail?.layoutParams =  RelativeLayout.LayoutParams(dip(30), dip(30)).apply {
+        iv_fail?.layoutParams = RelativeLayout.LayoutParams(dip(20), dip(20)).apply {
             centerVertically()
-            if (item.isSelf()) leftOf(localId) else rightOf(localId)
+            if (item.isSelf()) leftOf(itemView!!) else rightOf(itemView!!)
         }
-        iv_fail?.isShow(item.status() == 3)
+//        iv_fail?.isShow(item.status() == 3)
         var name = item.sender().toString()
         if (name.length > 2) {
             name = name.substring(name.length - 2)

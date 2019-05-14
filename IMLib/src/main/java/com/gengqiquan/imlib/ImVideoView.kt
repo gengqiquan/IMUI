@@ -90,7 +90,6 @@ class ImVideoView(context: Context) : RealImView(context) {
             if (item.isSelf()) leftOf(fl_content!!) else rightOf(fl_content!!)
 
         }
-        Log.d("RealImView", "自容器decoratorItemView")
         iv_loading?.isShow(item.status() == 1)
         val video = item.video()
         val videoElem = video.video as TIMVideoElem

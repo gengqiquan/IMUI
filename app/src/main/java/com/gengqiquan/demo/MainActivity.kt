@@ -228,7 +228,7 @@ class MainActivity : AppCompatActivity() {
                         Log.e(tag, "onSuccess" + msg.toString())
                         senderListener?.success()
 //                        im_ui.updateMsgs(RealMsg.create(msg))
-                        realMsg.forEach { it.success() }
+                        realMsg.forEach { it.failure() }
                         im_ui.updateMsgs(realMsg)
 
                     }
@@ -251,7 +251,9 @@ class MainActivity : AppCompatActivity() {
                         PhotoAlbum(this@MainActivity).setLimitCount(4).albumIntent
                     )
                         .result {
-                            send(IMHelp.getMsgBuildPolicy().buildImgMessage(PhotoAlbum.parseResult(it)))
+                            IMHelp.getMsgBuildPolicy()
+                                .buildImgMessageList(PhotoAlbum.parseResult(it))
+                                .forEach(send)
                         }
                     return
                 }
@@ -259,7 +261,7 @@ class MainActivity : AppCompatActivity() {
                     val captureIntent = Intent(this@MainActivity, CameraActivity::class.java)
                     CameraActivity.mCallBack = object : MediaCallBack {
                         override fun onImageSuccess(path: String) {
-                            send(IMHelp.getMsgBuildPolicy().buildImgMessage(arrayListOf(path)))
+                            send(IMHelp.getMsgBuildPolicy().buildImgMessage(path))
                         }
 
                         override fun onVideoSuccess(videoData: Intent) {
@@ -321,7 +323,7 @@ class MainActivity : AppCompatActivity() {
             }
 //            lastMsg = null
 //            loadMore()
-            im_ui.delete(it)
+            im_ui.delete(RealMsg.decorate(it))
             Log.e(tag, "删除成功")
         })
         LongPressHelp.init(list)
