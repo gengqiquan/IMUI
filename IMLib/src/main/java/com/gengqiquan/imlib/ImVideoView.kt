@@ -20,7 +20,7 @@ import com.tencent.imsdk.TIMVideoElem
 import com.tencent.imsdk.conversation.ProgressInfo
 import org.jetbrains.anko.*
 
-class IMVideoView(context: Context, parent: ViewGroup) : RealImView(context, parent) {
+class ImVideoView(context: Context, parent: ViewGroup) : RealImView(context, parent) {
     var iv_img: ImageView? = null
     var iv_paly: ImageView? = null
     var iv_loading: ImageView? = null

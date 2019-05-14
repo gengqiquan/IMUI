@@ -117,7 +117,9 @@ class MainActivity : AppCompatActivity() {
             override fun onRefresh() {
             }
         }
-
+        userConfig.setUploadProgressListener { timMessage, _, _, progress ->
+            Log.d(tag, "进度" + "===" + timMessage.status().status + "==" +  + progress)
+        }
         TIMManager.getInstance().userConfig = TIMUserConfigMsgExt(userConfig)
             .setMessageRevokedListener {
                 im_ui.refresh()
