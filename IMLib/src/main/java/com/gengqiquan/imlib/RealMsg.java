@@ -75,10 +75,22 @@ public class RealMsg implements IimMsg {
             BitmapFactory.decodeFile(timImageElem.getPath(), options);
             int imgWidth = options.outWidth;
             int imgHeight = options.outHeight;
-            return new ImImage(timImageElem.getPath(), imgWidth, imgHeight);
+            return new ImImage(timImageElem.getPath(), null, imgWidth, imgHeight);
         }
-        TIMImage timImage = ((TIMImageElem) elem).getImageList().get(0);
-        return new ImImage(timImage.getUrl(), timImage.getWidth(), timImage.getHeight());
+
+        String Thumb = null;
+        String Original = null;
+        for (TIMImage image : timImageElem.getImageList()) {
+            if (image.getType() == TIMImageType.Thumb) {
+                Thumb = image.getUrl();
+                continue;
+            }
+            if (image.getType() == TIMImageType.Original) {
+                Original = image.getUrl();
+            }
+        }
+        TIMImage timImage = timImageElem.getImageList().get(0);
+        return new ImImage(Original, Thumb, timImage.getWidth(), timImage.getHeight());
     }
 
     @NotNull
@@ -90,9 +102,8 @@ public class RealMsg implements IimMsg {
         final TIMVideoElem videoElem = (TIMVideoElem) elem;
         TIMSnapshot snapshot = videoElem.getSnapshotInfo();
         TIMVideo videoInfo = videoElem.getVideoInfo();
-        return new ImVideo(videoElem, new ImImage(videoElem.getSnapshotPath(), snapshot.getWidth(), snapshot.getHeight()));
+        return new ImVideo(videoElem, new ImImage(videoElem.getSnapshotPath(), null, snapshot.getWidth(), snapshot.getHeight()));
     }
-
 
     @NotNull
     @Override
@@ -155,7 +166,8 @@ public class RealMsg implements IimMsg {
     }
 
     /**
-     * getCustomInt 自定义消息字段 等于-1的情况是这个消息为待发送的一个消息
+     * getCustomInt 自定义消息字段（本地有效）  等于-1的情况是这个消息为待发送的一个消息，等于3代表消息发送失败
+     * <p>
      * 返回类型直接加上1000 解析对应view时判断是否千位为1可知这个消息为待发送的一个消息
      * 返回-1 代表撤回的消息
      *
@@ -223,8 +235,6 @@ public class RealMsg implements IimMsg {
 
     @Override
     public boolean equals(Object o) {
-
-
         if (this == o) return true;
         if (!(o instanceof RealMsg)) return false;
 
@@ -232,7 +242,7 @@ public class RealMsg implements IimMsg {
         if (timMsg == null || realMsg.timMsg == null || elem == null || realMsg.elem == null) {
             return false;
         }
-        return timMsg.getMsgUniqueId() == realMsg.timMsg.getMsgUniqueId();
+        return timMsg.getMsgUniqueId() == realMsg.timMsg.getMsgUniqueId() || timMsg.getMsgId().equals(realMsg.timMsg.getMsgId());
     }
 
     @Override
@@ -252,15 +262,26 @@ public class RealMsg implements IimMsg {
         status = 2;
     }
 
+    /**
+     * 由于SDK有bug，消息发送失败的时候并不会将状态改为SendFail，所以这里根据自定义字段矫正
+     * getCustomInt 自定义消息字段（本地有效） 等于-1的情况是这个消息为待发送的一个消息，等于3代表消息发送失败
+     *
+     * @author gengqiquan
+     * @date 2019-05-15 15:25
+     */
     @Override
     public @IimMsg.Companion.SendType
     int status() {
-        if (status > 1) {
-            return status;
-        }
+//        if (status > 1) {
+//            return status;
+//        }
 
         if (TIMMessageStatus.Sending == timMsg.status()) {
-            status = 1;
+            if (new TIMMessageExt(timMsg).getCustomInt() == 3) {
+                status = 3;
+            } else {
+                status = 1;
+            }
         }
         if (TIMMessageStatus.SendSucc == timMsg.status()) {
             status = 2;

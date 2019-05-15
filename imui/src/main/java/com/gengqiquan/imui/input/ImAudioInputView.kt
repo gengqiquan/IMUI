@@ -53,7 +53,7 @@ class ImAudioInputView(context: Context) : TextView(context) {
 //                            inputHandler?.stopRecording()
 //                        }
                         if (!audioCancel) {
-                            IMHelp.getMsgSender(context).send(
+                            IMHelp.getMsgSender(context)?.send(
                                 IMHelp.getMsgBuildPolicy().buildAudioMessage(
                                     IMHelp.getAudioRecorder().recordAudioPath,
                                     it.toInt()

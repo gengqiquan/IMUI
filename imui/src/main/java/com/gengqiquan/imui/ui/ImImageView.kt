@@ -14,7 +14,7 @@ import com.gengqiquan.imui.interfaces.DisplayListener
 import com.gengqiquan.imui.interfaces.IimMsg
 import org.jetbrains.anko.*
 
-class ImImageView(context: Context) : RealImView(context) {
+class ImImageView(mContext: Context) : RealImView(mContext) {
     var iv_img: ImageView? = null
     override fun floatBaseView() = iv_img!!
 
@@ -28,7 +28,6 @@ class ImImageView(context: Context) : RealImView(context) {
     override fun decoratorItemView(item: IimMsg) {
         iv_img?.setImageDrawable(null)
         val img = item.img()
-        val url = img.url ?: return
         val w = img.width
         val h = img.height
         val max = dip(140)
@@ -60,10 +59,10 @@ class ImImageView(context: Context) : RealImView(context) {
             if (item.isSelf()) alignParentRight() else alignParentLeft()
         }
 
-        IMHelp.getImageDisplayer().display(url, iv_img!!, object : DisplayListener {
+        IMHelp.getImageDisplayer().display(img.thumb, iv_img!!, object : DisplayListener {
             override fun ready() {
                 iv_img?.singleClick {
-                    context.startActivity<ImagePreviewActivity>(IMHelp.IMAGE_PATH to url)
+                    context.startActivity<ImagePreviewActivity>(IMHelp.IMAGE_PATH to img.url)
                 }
             }
 

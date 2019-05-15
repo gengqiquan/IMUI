@@ -55,9 +55,11 @@ class IMUI(context: Context, attrs: AttributeSet?) : LinearLayout(context, attrs
         }
         allInit = 1
         data.addAll(0, oldData)
-//        uiAdapter.notifyItemRangeInserted(0, oldData.size)
-        uiAdapter.notifyDataSetChanged()
-        scrollToNeed(oldData.size - 1)
+        uiAdapter.notifyItemRangeInserted(0, oldData.size)
+//        uiAdapter.notifyDataSetChanged()
+        if (init) {
+            scrollToNeed(oldData.size - 1)
+        }
         mIsLoadMore = false
     }
 
@@ -65,7 +67,7 @@ class IMUI(context: Context, attrs: AttributeSet?) : LinearLayout(context, attrs
         allInit = 1
         val start = data.size
         data.addAll(newData)
-//        uiAdapter.notifyItemRangeInserted(start, newData.size)
+//        uiAdapter.notifyItemRangeInserted(start+allInit, newData.size+allInit)
         uiAdapter.notifyDataSetChanged()
         scrollToNeed(data.size - 1)
     }
@@ -74,7 +76,7 @@ class IMUI(context: Context, attrs: AttributeSet?) : LinearLayout(context, attrs
         msgs.forEach {
             val index = data.indexOf(it)
             if (index >= 0) {
-                uiAdapter.notifyItemChanged(index+allInit)
+                uiAdapter.notifyItemChanged(index + allInit)
             }
 
         }
@@ -85,7 +87,7 @@ class IMUI(context: Context, attrs: AttributeSet?) : LinearLayout(context, attrs
         val index = data.indexOf(any)
         if (index > -1) {
             data.removeAt(index)
-            uiAdapter.notifyItemRemoved(index+allInit)
+            uiAdapter.notifyItemRemoved(index + allInit)
         }
     }
 
@@ -120,23 +122,21 @@ class IMUI(context: Context, attrs: AttributeSet?) : LinearLayout(context, attrs
             }
             addOnScrollListener(object : RecyclerView.OnScrollListener() {
                 override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-
                     if (dy < -1) {
                         inputUI.reset()
                     }
                 }
 
                 override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
-                    if (!mIsLoadMore && allInit == 1 && (newState == SCROLL_STATE_IDLE || newState == SCROLL_STATE_SETTLING)) {
-                        if (!recyclerView.canScrollVertically(-1)) {
-                            mIsLoadMore = true
-                            moreOldMsgListener?.more()
-                        }
-                    }
+                    checkLoadMore(1)
                 }
             })
         }
-
+        uiAdapter.registerAdapterDataObserver(object : RecyclerView.AdapterDataObserver() {
+            override fun onItemRangeRemoved(positionStart: Int, itemCount: Int) {
+                checkLoadMore(2)
+            }
+        })
         addView(inputUI)
         viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
             var lastHeight = 0
@@ -152,10 +152,26 @@ class IMUI(context: Context, attrs: AttributeSet?) : LinearLayout(context, attrs
         })
     }
 
-    private var lastListY = 0
+    private fun checkLoadMore(index: Int) {
+        if (!mIsLoadMore && allInit == 1) {
+            if (isLastItemVisible(index)) {
+                mIsLoadMore = true
+                moreOldMsgListener?.more()
+            }
+        }
+    }
+
+    private fun isLastItemVisible(index: Int): Boolean {
+        if (uiAdapter!!.itemCount == 0) {
+            return true
+        }
+        val lastVisiblePosition = linearLayoutManager.findFirstVisibleItemPosition()
+        return lastVisiblePosition < index
+    }
+
     private var mIsLoadMore = false
     private var moreOldMsgListener: IMoreOldMsgListener? = null
-    fun setMoreOldmoreOldMsgListener(listener: IMoreOldMsgListener) {
+    fun setMoreOldMsgListener(listener: IMoreOldMsgListener) {
         moreOldMsgListener = listener
     }
 

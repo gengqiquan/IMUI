@@ -65,7 +65,7 @@ class MainActivity : AppCompatActivity() {
 //        )
 //        list.add(RealMsg(TXMsg("", "", TXMsg.Type.VIDEO), true))
 //        list.add(RealMsg(TXMsg("", "", TXMsg.Type.VIDEO), false))
-        IMHelp.init(applicationContext, TIMAudioRecorder(), TIMMsgBuilder(), object : ImImageDisplayer {
+        IMHelp.init(this, TIMAudioRecorder(), TIMMsgBuilder(), object : ImImageDisplayer {
             override fun display(url: String, imageView: ImageView, listener: DisplayListener?) {
                 Glide.with(imageView.context)
                     .load(url)
@@ -78,7 +78,7 @@ class MainActivity : AppCompatActivity() {
                     })
             }
         })
-        IMHelp.addImViewFactory(TIMViewFactory(this))
+        IMHelp.addImViewFactory(TIMViewFactory())
 //        im_ui.appendMsgs(list.toMutableList())
         TIMManager.getInstance().init(
             applicationContext, TIMSdkConfig(1400205051)
@@ -160,49 +160,22 @@ class MainActivity : AppCompatActivity() {
             tel
         )
         val conversationExt = TIMConversationExt(con)
-        fun loadMore() {
-            val count = 10
-
-//            conversationExt.getLocalMessage(count, lastMsg, object : TIMValueCallBack<List<TIMMessage>> {
-//                override fun onSuccess(msgs: List<TIMMessage>) {
-//                    Log.e(tag, "getLocalMessage" + msgs.size.toString())
-//                    if (msgs.size < count) {
-//                        im_ui.allInit()
-//                    }
-//                    if (msgs.isEmpty()) {
-//                        return
-//                    }
-//
-//                    val list = mutableListOf<IimMsg>()
-//                    msgs.forEach {
-//                        list.addAll(RealMsg.create(it))
-//                    }
-//                    list.reverse()
-//                    im_ui.oldMsgs(list, lastMsg == null)
-//                    lastMsg = msgs.last()
-//                }
-//
-//                override fun onError(p0: Int, p1: String?) {
-//                    Log.e(tag, "getLocalMessage" + p0.toString() + ":" + p1)
-//                }
-//            })
+        val count = 10
+        fun getMessage(list: MutableList<TIMMessage>, finish: (List<TIMMessage>) -> Unit) {
             conversationExt.getMessage(count, lastMsg, object : TIMValueCallBack<List<TIMMessage>> {
                 override fun onSuccess(msgs: List<TIMMessage>) {
                     Log.e(tag, "获取漫游消息" + msgs.size.toString())
-                    if (msgs.size < count) {
-                        im_ui.allInit()
-                    }
                     if (msgs.isEmpty()) {
+                        finish(list)
                         return
                     }
-
-                    val list = mutableListOf<IimMsg>()
-                    msgs.forEach {
-                        list.addAll(RealMsg.create(it))
-                    }
-                    list.reverse()
-                    im_ui.oldMsgs(list, lastMsg == null)
                     lastMsg = msgs.last()
+                    list.addAll(msgs.filter { it.status() != TIMMessageStatus.HasDeleted })
+                    if (list.size >= count || msgs.size < count) {
+                        finish(list)
+                        return
+                    }
+                    getMessage(list, finish)
                 }
 
                 override fun onError(p0: Int, p1: String?) {
@@ -210,16 +183,51 @@ class MainActivity : AppCompatActivity() {
                 }
             })
         }
-        loadMore()
-        im_ui.setMoreOldmoreOldMsgListener(object : IMoreOldMsgListener {
+
+        fun loadMore(init: Boolean = false) {
+            getMessage(mutableListOf(), {
+                if (it.isNotEmpty()) {
+                    if (it.size < count) {
+                        im_ui.allInit()
+                    }
+
+                    val list = mutableListOf<IimMsg>()
+                    it.forEach {
+                        list.addAll(RealMsg.create(it))
+                    }
+                    list.reverse()
+                    im_ui.oldMsgs(list, init)
+                }
+            })
+//            conversationExt.getMessage(count, lastMsg, object : TIMValueCallBack<List<TIMMessage>> {
+//                override fun onSuccess(msgs: List<TIMMessage>) {
+//                    Log.e(tag, "获取漫游消息" + msgs.size.toString())
+//
+//                }
+//
+//                override fun onError(p0: Int, p1: String?) {
+//                    Log.e(tag, "获取漫游消息失败" + p0.toString() + ":" + p1)
+//                }
+//            })
+        }
+        loadMore(true)
+        im_ui.setMoreOldMsgListener(object : IMoreOldMsgListener {
             override fun more() {
                 loadMore()
             }
         })
         IMHelp.registerMsgSender(this, object : IMsgSender {
 
-            override fun send(msg: Any, senderListener: ISenderListener?) {
-                val realMsg = RealMsg.create(msg as TIMMessage)
+            override fun send(msg: Any, repeat: Boolean, senderListener: ISenderListener?) {
+                var timMessage = msg as TIMMessage
+                if (repeat) {
+                    TIMMessageExt(timMessage).remove()
+                    im_ui.delete(RealMsg.decorate(timMessage))
+                    val newMsg = TIMMessage()
+                    newMsg.copyFrom(timMessage)
+                    timMessage = newMsg
+                }
+                val realMsg = RealMsg.create(timMessage)
                 im_ui.newMsgs(realMsg)
                 senderListener?.sending()
 //                im_ui.newMsgs(RealMsg.create(msg as TIMMessage))
@@ -228,7 +236,7 @@ class MainActivity : AppCompatActivity() {
                         Log.e(tag, "onSuccess" + msg.toString())
                         senderListener?.success()
 //                        im_ui.updateMsgs(RealMsg.create(msg))
-                        realMsg.forEach { it.failure() }
+//                        realMsg.forEach { it.success() }
                         im_ui.updateMsgs(realMsg)
 
                     }
@@ -236,7 +244,7 @@ class MainActivity : AppCompatActivity() {
                     override fun onError(p0: Int, p1: String?) {
                         Log.e(tag, "onError" + p0.toString() + ":" + p1)
                         senderListener?.failure()
-                        realMsg.forEach { it.failure() }
+                        realMsg.forEach { TIMMessageExt(it.realData()).customInt = 3 }
                         im_ui.updateMsgs(realMsg)
                     }
                 })

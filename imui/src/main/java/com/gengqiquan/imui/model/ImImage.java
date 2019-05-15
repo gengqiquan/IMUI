@@ -2,13 +2,23 @@ package com.gengqiquan.imui.model;
 
 public class ImImage {
     private String url;
+    private String thumb;
     private long height;
     private long width;
 
-    public ImImage(String url, long width, long height) {
+    public ImImage(String url, String thumb, long width, long height) {
         this.url = url;
+        this.thumb = thumb;
         this.height = height;
         this.width = width;
+    }
+
+    public String getThumb() {
+        return thumb == null ? url : thumb;
+    }
+
+    public void setThumb(String thumb) {
+        this.thumb = thumb;
     }
 
     public String getUrl() {

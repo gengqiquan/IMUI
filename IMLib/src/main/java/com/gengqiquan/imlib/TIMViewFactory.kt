@@ -1,11 +1,11 @@
 package com.gengqiquan.imlib
 
-import android.content.Context
 import android.view.ViewGroup
 import com.gengqiquan.imui.interfaces.IimViewFactory
-import com.gengqiquan.imui.ui.*
+import com.gengqiquan.imui.ui.DefaultIMViewFactory
+import com.gengqiquan.imui.ui.ImView
 
-class TIMViewFactory(val context: Context) : IimViewFactory {
+class TIMViewFactory : IimViewFactory {
 
     /**
      *viewType大于1000的类型均为特殊类型，常规类型不要使用
@@ -13,6 +13,7 @@ class TIMViewFactory(val context: Context) : IimViewFactory {
      *@date 2019-05-09 15:01
      */
     override fun create(parent: ViewGroup, viewType: Int): ImView? {
+        val context = parent.context
         if (viewType > 999) {
             return when (viewType / 1000) {
                 1 -> {

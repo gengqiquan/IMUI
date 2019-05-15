@@ -37,7 +37,7 @@ class ImInputUI(context: Context) : LinearLayout(context) {
                     decorator(info)
                     onClick {
                         otherProxy?.proxy(info.type) {
-                            IMHelp.getMsgSender(context).send(it)
+                            IMHelp.getMsgSender(context)?.send(it)
                         }
                     }
                 }
@@ -164,7 +164,7 @@ class ImInputUI(context: Context) : LinearLayout(context) {
                 text = "发送"
                 visibility = View.GONE
                 singleClick {
-                    IMHelp.getMsgSender(context).send(
+                    IMHelp.getMsgSender(context)?.send(
                         IMHelp.getMsgBuildPolicy().buildTextMessage(et_text!!.text.toString())
                     )
                     et_text?.setText("")

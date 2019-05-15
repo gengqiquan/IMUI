@@ -1,6 +1,7 @@
 package com.gengqiquan.imui.help;
 
 import android.content.Context;
+import androidx.annotation.Nullable;
 import com.gengqiquan.imui.interfaces.*;
 import com.gengqiquan.imui.ui.DefaultIMViewFactory;
 
@@ -34,7 +35,7 @@ public class IMHelp {
         msgSenderMap.remove(context);
     }
 
-    public static IMsgSender getMsgSender(Context context) {
+    public static @Nullable IMsgSender getMsgSender(Context context) {
         return msgSenderMap.get(context);
     }
 
@@ -90,9 +91,9 @@ public class IMHelp {
         if (pathProvider == null) {
             synchronized (IMHelp.class) {
                 if (pathProvider == null) {
-                    applicationContext = context;
+                    applicationContext = context.getApplicationContext();
                     pathProvider = new PathProvider(applicationContext);
-                    viewFactory.add(new DefaultIMViewFactory(context));
+                    viewFactory.add(new DefaultIMViewFactory());
                     msgBuildPolicy = buildPolicy;
                     audioRecord = recorder;
                     imageDisplayer = displayer;

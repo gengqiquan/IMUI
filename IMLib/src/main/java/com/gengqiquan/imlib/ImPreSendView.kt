@@ -83,20 +83,7 @@ class ImPreSendView(val context: Context) : ImView {
                 IMHelp.getImageDisplayer().display(data.msg.pic_url, iv_img!!)
                 tv_send?.singleClick {
                     TIMMessageExt(item.realData()).customInt = 0
-                    IMHelp.getMsgSender(context)?.send(item.realData(), object : ISenderListener {
-                        override fun waiting() {
-
-                        }
-
-                        override fun sending() {
-                        }
-
-                        override fun success() {
-                        }
-
-                        override fun failure() {
-                        }
-                    })
+                    IMHelp.getMsgSender(context)?.send(item.realData())
                 }
             }
             else -> null

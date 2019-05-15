@@ -1,6 +1,5 @@
 package com.gengqiquan.imui.ui
 
-import android.content.Context
 import android.view.ViewGroup
 import com.gengqiquan.imui.interfaces.IimViewFactory
 
@@ -9,7 +8,7 @@ import com.gengqiquan.imui.interfaces.IimViewFactory
  *@author gengqiquan
  *@date 2019-05-09 15:01
  */
-class DefaultIMViewFactory(val context: Context) : IimViewFactory {
+class DefaultIMViewFactory : IimViewFactory {
     companion object {
         val REVOKE = -1
         val TEXT = 1
@@ -21,6 +20,7 @@ class DefaultIMViewFactory(val context: Context) : IimViewFactory {
     }
 
     override fun create(parent: ViewGroup, viewType: Int): ImView? {
+        val context = parent.context
         return when (viewType) {
             REVOKE -> {
                 ImRevokeView(context)

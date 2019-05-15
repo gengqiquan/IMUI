@@ -10,12 +10,13 @@ import android.view.ViewGroup
 import android.widget.*
 import androidx.annotation.IdRes
 import com.gengqiquan.imui.R
+import com.gengqiquan.imui.help.IMHelp
 import com.gengqiquan.imui.help.LongPressHelp
 import com.gengqiquan.imui.interfaces.IimMsg
 import com.gengqiquan.imui.model.MenuAction
 import org.jetbrains.anko.*
 
-abstract class RealImView(context: Context) : LinearLayout(context), ImView {
+abstract class RealImView(val mContext: Context) : LinearLayout(mContext), ImView {
 
     private var tv_header: TextView? = null
     private var tv_time: TextView? = null
@@ -66,7 +67,9 @@ abstract class RealImView(context: Context) : LinearLayout(context), ImView {
                 }
                 addView(itemView)
                 iv_fail = imageView {
-                    backgroundResource = R.drawable.im_fail
+                    padding=dip(8)
+                    imageResource = R.drawable.im_fail
+
                 }
             }
         }
@@ -83,11 +86,16 @@ abstract class RealImView(context: Context) : LinearLayout(context), ImView {
         itemView?.layoutParams = RelativeLayout.LayoutParams(wrapContent, wrapContent).apply {
             if (item.isSelf()) alignParentRight() else alignParentLeft()
         }
-        iv_fail?.layoutParams = RelativeLayout.LayoutParams(dip(20), dip(20)).apply {
+        iv_fail?.layoutParams = RelativeLayout.LayoutParams(dip(36), dip(36)).apply {
             centerVertically()
             if (item.isSelf()) leftOf(itemView!!) else rightOf(itemView!!)
         }
-//        iv_fail?.isShow(item.status() == 3)
+        iv_fail?.isShow(item.status() == 3)
+
+        iv_fail?.singleClick {
+            IMHelp.getMsgSender(context)?.send(item.realData(), true)
+        }
+
         var name = item.sender().toString()
         if (name.length > 2) {
             name = name.substring(name.length - 2)
