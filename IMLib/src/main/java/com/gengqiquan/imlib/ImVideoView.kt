@@ -8,10 +8,7 @@ import android.util.Log
 import android.view.Gravity
 import android.view.View
 import android.view.ViewGroup
-import android.widget.FrameLayout
-import android.widget.ImageView
-import android.widget.LinearLayout
-import android.widget.RelativeLayout
+import android.widget.*
 import androidx.annotation.IdRes
 import com.gengqiquan.imlib.video.VideoViewActivity
 import com.gengqiquan.imlib.video.util.FileUtil
@@ -27,7 +24,7 @@ import org.jetbrains.anko.*
 class ImVideoView(context: Context) : RealImView(context) {
     var iv_img: ImageView? = null
     var iv_paly: ImageView? = null
-    var iv_loading: ImageView? = null
+    var pb_loading: ProgressBar? = null
     var fl_content: FrameLayout? = null
     var rl_item: RelativeLayout? = null
     //    var ll_content: RelativeLayout? = null
@@ -39,10 +36,8 @@ class ImVideoView(context: Context) : RealImView(context) {
 
     override fun createItemView(contentView: RelativeLayout): View {
         rl_item = RelativeLayout(context).apply {
-            backgroundColor = Color.YELLOW
             fl_content = frameLayout {
                 id = localId
-                backgroundColor = Color.BLACK
                 layoutParams = RelativeLayout.LayoutParams(wrapContent, wrapContent)
                 iv_img = imageView {
                     scaleType = ImageView.ScaleType.CENTER_INSIDE
@@ -57,39 +52,20 @@ class ImVideoView(context: Context) : RealImView(context) {
                     }
                 }
             }
-            iv_loading = imageView {
-                backgroundColor = Color.BLACK
-                layoutParams = RelativeLayout.LayoutParams(dip(30), dip(30)).apply {
+            pb_loading = progressBar {
+                indeterminateDrawable = resources.getDrawable(R.drawable.im_loading)
+                layoutParams = RelativeLayout.LayoutParams(dip(20), dip(20)).apply {
                     centerVertically()
                 }
-//                    visibility = View.GONE
             }
         }
         return rl_item!!
 
     }
 
-    fun loading() {
-        iv_loading?.show()
-        iv_loading?.setImageDrawable(CircularProgressDrawable(context).apply {
-            start()
-            setStyle(CircularProgressDrawable.DEFAULT)
-            arrowScale = 0.5f
-            strokeWidth = dip(3).toFloat()
-            setColorSchemeColors(Color.GRAY)
-        })
-    }
-
     override fun decoratorItemView(item: IimMsg) {
 
-//
-//        iv_loading?.layoutParams = (iv_loading?.layoutParams as RelativeLayout.LayoutParams).apply {
-//            addRule(RelativeLayout.LEFT_OF)
-//            addRule(RelativeLayout.RIGHT_OF)
-//            if (item.isSelf()) leftOf(fl_content!!) else rightOf(fl_content!!)
-//
-//        }
-        iv_loading?.isShow(item.status() == 1)
+        pb_loading?.isShow(item.status() == 1)
         val video = item.video()
         val videoElem = video.video as TIMVideoElem
 
@@ -194,7 +170,7 @@ class ImVideoView(context: Context) : RealImView(context) {
             if (isSelf) alignParentRight() else alignParentLeft()
         }
         var w = newWidth
-        if (iv_loading!!.visibility == View.VISIBLE) {
+        if (pb_loading!!.visibility == View.VISIBLE) {
             w = newWidth + dip(30)
         }
         rl_item?.layoutParams = RelativeLayout.LayoutParams(w, newHeight).apply {

@@ -37,22 +37,15 @@ class ImAudioInputView(context: Context) : TextView(context) {
                     startRecordY = motionEvent.getY()
 
                     startRecord()
-//                    inputHandler?.startRecording()
                     start = System.currentTimeMillis()
                     IMHelp.getAudioRecorder().startRecord {
-                        //                        if (inputHandler != null) {
-//                            if (audioCancel) {
-//                                inputHandler?.stopRecording()
-//                                return@startRecord
-//                            }
-                        if (it < 1000) {
-                            ToastHelp.toastShortMessage("说话时间太短")
+                        if (it < 1000 && !audioCancel) {
+                            tooShort()
                             return@startRecord
                         }
-                        stopRecord()
-//                            inputHandler?.stopRecording()
-//                        }
+
                         if (!audioCancel) {
+                            stopRecord()
                             IMHelp.getMsgSender(context)?.send(
                                 IMHelp.getMsgBuildPolicy().buildAudioMessage(
                                     IMHelp.getAudioRecorder().recordAudioPath,
@@ -82,7 +75,9 @@ class ImAudioInputView(context: Context) : TextView(context) {
                 if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
 
                     audioCancel = motionEvent.getY() - startRecordY < -100
-                    stopRecord()
+                    if (audioCancel) {
+                        stopRecord()
+                    }
                     IMHelp.getAudioRecorder().stopRecord()
                 }
                 return true
@@ -112,6 +107,16 @@ class ImAudioInputView(context: Context) : TextView(context) {
         popup?.dismiss()
     }
 
+    fun tooShort() {
+        animationDrawable?.stop()
+        iv_animate?.padding = dip(12)
+        iv_animate?.imageResource = R.drawable.im_too_short
+        tv_tips?.text = "说话时间太短"
+        postDelayed({
+            stopRecord()
+        }, 1000)
+    }
+
     var popup: PopupWindow? = null
     var iv_animate: ImageView? = null
     var tv_tips: TextView? = null
@@ -124,11 +129,15 @@ class ImAudioInputView(context: Context) : TextView(context) {
                 orientation = LinearLayout.VERTICAL
                 iv_animate = imageView {
                     layoutParams = LinearLayout.LayoutParams(dip(90), dip(90))
+                    scaleType = ImageView.ScaleType.CENTER_INSIDE
                     setImageResource(R.drawable.im_recording_volume)
                 }
                 tv_tips = textView {
                     gravity = Gravity.CENTER
                     text = "手指上滑，取消发送"
+                    horizontalPadding = dip(5)
+                    verticalPadding = dip(3)
+                    includeFontPadding = false
                     textColor = 0xffeeeeee.toInt()
                     layoutParams = LinearLayout.LayoutParams(wrapContent, wrapContent).apply {
                         topMargin = dip(10)
@@ -153,12 +162,16 @@ class ImAudioInputView(context: Context) : TextView(context) {
     var animationDrawable: AnimationDrawable? = null
     fun moveOut() {
         tv_tips?.text = "松开手指，取消发送"
+        tv_tips?.backgroundColor = 0xff680008.toInt()
         animationDrawable?.stop()
-        iv_animate?.imageResource = R.drawable.im_close
+        iv_animate?.padding = dip(15)
+        iv_animate?.imageResource = R.drawable.im_voice_cancel
     }
 
     fun moveIn() {
         tv_tips?.text = "手指上滑，取消发送"
+        tv_tips?.backgroundColor = 0x00680008
+        iv_animate?.padding = dip(6)
         iv_animate?.setImageResource(R.drawable.im_recording_volume)
         animationDrawable = iv_animate?.drawable as AnimationDrawable?
         iv_animate?.post {

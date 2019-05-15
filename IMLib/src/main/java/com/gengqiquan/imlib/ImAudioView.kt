@@ -76,7 +76,7 @@ class ImAudioView(context: Context) : RealImView(context) {
         fl_voice?.background =
             context.resources.getDrawable(if (item.isSelf()) R.drawable.im_text_self else R.drawable.im_text)
         tv_time?.text = item.duration().toString() + "\""
-        iv_play?.setImageResource(R.drawable.im_voice_msg_playing_3)
+        iv_play?.setImageResource(if (item.isSelf()) R.drawable.im_voice_msg_playing_self_3 else R.drawable.im_voice_msg_playing_3)
 
 
         fl_voice?.singleClick {
@@ -89,14 +89,14 @@ class ImAudioView(context: Context) : RealImView(context) {
                 ToastHelp.toastLongMessage("语音文件还未下载完成")
                 return@singleClick
             }
-            iv_play?.setImageResource(R.drawable.im_play_voice_message)
+            iv_play?.setImageResource(if (item.isSelf()) R.drawable.im_play_voice_message_self else R.drawable.im_play_voice_message)
             val animationDrawable = iv_play?.drawable as AnimationDrawable
             animationDrawable.start()
             UIKitAudioArmMachine.getInstance()
                 .playRecord(audio) {
                     iv_play?.post {
                         animationDrawable.stop()
-                        iv_play?.setImageResource(R.drawable.im_voice_msg_playing_3)
+                        iv_play?.setImageResource(if (item.isSelf()) R.drawable.im_voice_msg_playing_self_3 else R.drawable.im_voice_msg_playing_3)
                     }
                 }
         }

@@ -2,24 +2,19 @@
 <animation-list xmlns:android="http://schemas.android.com/apk/res/android">
     <item
         android:drawable="@drawable/im_voice_volume1"
-        android:duration="200" />
+        android:duration="300" />
     <item
         android:drawable="@drawable/im_voice_volume2"
-        android:duration="200" />
+        android:duration="300" />
     <item
         android:drawable="@drawable/im_voice_volume3"
-        android:duration="200" />
+        android:duration="300" />
     <item
         android:drawable="@drawable/im_voice_volume4"
-        android:duration="200" />
+        android:duration="300" />
     <item
         android:drawable="@drawable/im_voice_volume5"
-        android:duration="200" />
-    <item
-        android:drawable="@drawable/im_voice_volume6"
-        android:duration="200" />
-    <item
-        android:drawable="@drawable/im_voice_volume7"
-        android:duration="200" />
+        android:duration="300" />
+
 
 </animation-list>
