@@ -2,20 +2,15 @@ package com.gengqiquan.imui.ui
 
 import android.content.Context
 import android.util.AttributeSet
-import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewTreeObserver
-import android.widget.FrameLayout
 import android.widget.LinearLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import androidx.recyclerview.widget.RecyclerView.SCROLL_STATE_IDLE
-import androidx.recyclerview.widget.RecyclerView.SCROLL_STATE_SETTLING
 import com.gengqiquan.imui.input.ImInputUI
 import com.gengqiquan.imui.interfaces.IMoreOldMsgListener
 import com.gengqiquan.imui.interfaces.IimMsg
-import com.gengqiquan.imui.interfaces.IimViewFactory
 import org.jetbrains.anko.bottomPadding
 import org.jetbrains.anko.dip
 import org.jetbrains.anko.matchParent
